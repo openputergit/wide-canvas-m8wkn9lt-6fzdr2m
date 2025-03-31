@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trust Management System</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+</head>
+<style>
+    body {
+        font-family: 'Poppins', sans-serif;
+    }
+    .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
+    }
+    .custom-scrollbar::-webkit-scrollbar-track {
+        background: #f1f1f1;
+    }
+    .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #888;
+        border-radius: 3px;
+    }
+</style>
+<body class="bg-gray-50">
+    <!-- Navigation -->
+    <nav class="bg-blue-600 text-white p-4">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-2xl font-bold">Trust Management System</h1>
+            <div class="space-x-4">
+                <button onclick="showSection('dashboard')" class="hover:text-blue-200">Dashboard</button>
+                <button onclick="showSection('members')" class="hover:text-blue-200">Members</button>
+                <button onclick="showSection('news')" class="hover:text-blue-200">News</button>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="container mx-auto p-4">
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="space-y-6">
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2">Total Members</h3>
+                    <p class="text-3xl font-bold text-blue-600">124</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2">Active Students</h3>
+                    <p class="text-3xl font-bold text-green-600">45</p>
+                </div>
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2">Recent Updates</h3>
+                    <p class="text-3xl font-bold text-orange-600">12</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Members Section -->
+        <section id="members" class="hidden space-y-6">
+            <div class="flex justify-between items-center">
+                <h2 class="text-2xl font-bold">Members Directory</h2>
+                <button onclick="showAddMemberForm()" class="bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700">
+                    Add Member
+                </button>
+            </div>
+
+            <div class="bg-white rounded-lg shadow overflow-hidden">
+                <table class="w-full">
+                    <thead class="bg-gray-50">
+                        <tr>
+                            <th class="px-6 py-3 text-left">Name</th>
+                            <th class="px-6 py-3 text-left">Family Members</th>
+                            <th class="px-6 py-3 text-left">Contact</th>
+                            <th class="px-6 py-3 text-left">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200" id="membersList">
+                        <!-- Members will be added here dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- News Section -->
+        <section id="news" class="hidden space-y-6">
+            <h2 class="text-2xl font-bold">Latest News & Updates</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4" id="newsList">
+                <!-- News items will be added here dynamically -->
+            </div>
+        </section>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="hidden fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md">
+            <h3 class="text-xl font-bold mb-4">Add New Member</h3>
+            <form id="memberForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Full Name</label>
+                    <input type="text" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Family Members</label>
+                    <input type="number" class="w-full p-2 border rounded" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Contact</label>
+                    <input type="tel" class="w-full p-2 border rounded" required>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" onclick="closeAddMemberModal()" class="px-4 py-2 border rounded">Cancel</button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded">Save</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Show/Hide Sections
+        function showSection(sectionId) {
+            document.querySelectorAll('section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            document.getElementById(sectionId).classList.remove('hidden');
+        }
+
+        // Modal Functions
+        function showAddMemberModal() {
+            document.getElementById('addMemberModal').classList.remove('hidden');
+        }
+
+        function closeAddMemberModal() {
+            document.getElementById('addMemberModal').classList.add('hidden');
+        }
+
+        // Sample Data
+        const members = [
+            { name: "John Doe", familyMembers: 4, contact: "+1234567890" },
+            { name: "Jane Smith", familyMembers: 3, contact: "+1987654321" }
+        ];
+
+        const news = [
+            { title: "Annual Meeting", content: "Annual general meeting scheduled for next month", date: "2024-02-15" },
+            { title: "New Program Launch", content: "Educational support program for members' children", date: "2024-02-10" }
+        ];
+
+        // Populate Members
+        function populateMembers() {
+            const membersList = document.getElementById('membersList');
+            membersList.innerHTML = members.map(member => `
+                <tr class="hover:bg-gray-50">
+                    <td class="px-6 py-4">${member.name}</td>
+                    <td class="px-6 py-4">${member.familyMembers}</td>
+                    <td class="px-6 py-4">${member.contact}</td>
+                    <td class="px-6 py-4">
+                        <button class="text-blue-600 hover:text-blue-800"><i class="bi bi-pencil"></i></button>
+                        <button class="text-red-600 hover:text-red-800 ml-2"><i class="bi bi-trash"></i></button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        // Populate News
+        function populateNews() {
+            const newsList = document.getElementById('newsList');
+            newsList.innerHTML = news.map(item => `
+                <div class="bg-white p-6 rounded-lg shadow">
+                    <h3 class="text-xl font-semibold mb-2">${item.title}</h3>
+                    <p class="text-gray-600 mb-2">${item.content}</p>
+                    <p class="text-sm text-gray-500">Posted on: ${item.date}</p>
+                </div>
+            `).join('');
+        }
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', () => {
+            showSection('dashboard');
+            populateMembers();
+            populateNews();
+        });
+
+        // Form Submission
+        document.getElementById('memberForm').addEventListener('submit', (e) => {
+            e.preventDefault();
+            // Add form handling logic here
+            closeAddMemberModal();
+        });
+    </script>
+<script>document.body.addEventListener('wheel', e => { if (!e.ctrlKey) return; e.preventDefault(); return }, { passive: false })</script>
+	</body>
+</html>
